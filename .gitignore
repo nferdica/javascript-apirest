@@ -1,4 +1,5 @@
 node_modules
+.env
 .editorconfig
 eslint.config.mjs
 nodemon.json
