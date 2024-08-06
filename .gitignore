@@ -1,5 +1,6 @@
 node_modules
 .env
 .editorconfig
+.sequelizerc
 eslint.config.mjs
 nodemon.json
