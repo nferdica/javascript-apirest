@@ -2,13 +2,30 @@ import dotenv from "dotenv";
 import {resolve} from 'path';
 dotenv.config();
 
-import "./database"
+import "./database";
 import express from "express";
-import homeRoutes from "./routes/homeRoutes"
-import userRoutes from "./routes/userRoutes"
-import tokenRoutes from "./routes/tokenRoutes"
-import alunoRoutes from "./routes/alunoRoutes"
-import fotoRoutes from "./routes/fotoRoutes"
+import cors from "cors";
+import helmet from "helmet";
+import homeRoutes from "./routes/homeRoutes";
+import userRoutes from "./routes/userRoutes";
+import tokenRoutes from "./routes/tokenRoutes";
+import alunoRoutes from "./routes/alunoRoutes";
+import fotoRoutes from "./routes/fotoRoutes";
+
+const whiteList = [
+  'https://react.nferdica.com',
+  'http://localhost:3000'
+];
+
+const corsOptions = {
+  origin: function (origin, cb) {
+    if(whiteList.indexOf(origin) !== -1 || !origin) {
+      cb(null, true);
+    } else {
+      cb(new Error('Not allowed by CORS'))
+    }
+  }
+}
 
 class App {
   constructor() {
@@ -18,17 +35,19 @@ class App {
   }
 
   middlewares() {
-    this.app.use(express.urlencoded({extended: true}))
+    this.app.use(cors(corsOptions));
+    this.app.use(helmet());
+    this.app.use(express.urlencoded({extended: true}));
     this.app.use(express.json());
     this.app.use('/img/', express.static(resolve(__dirname, '..', 'uploads', 'img')));
   }
 
   routes() {
-    this.app.use("/", homeRoutes)
-    this.app.use("/users/", userRoutes)
-    this.app.use("/tokens/", tokenRoutes)
-    this.app.use('/alunos/', alunoRoutes)
-    this.app.use('/fotos/', fotoRoutes)
+    this.app.use("/", homeRoutes);
+    this.app.use("/users/", userRoutes);
+    this.app.use("/tokens/", tokenRoutes);
+    this.app.use('/alunos/', alunoRoutes);
+    this.app.use('/fotos/', fotoRoutes);
   }
 }
 
